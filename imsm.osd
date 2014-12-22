@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data>
+  <enumDef name="meta_attribs" type="UInt32">
+    <entry name="RAID0" value="0x01" />
+    <entry name="RAID1" value="0x02" />
+    <entry name="RAID10" value="0x04" />
+    <entry name="RAID1E" value="0x08" />
+    <entry name="RAID5" value="0x10" />
+    <entry name="RAIDCNG" value="0x20" />
+    <entry name="EXP_STRIPE_SIZE" value="0x40" />
+    <entry name="RST_CACHE" value="0x2000000" />
+    <entry name="2TB_DISK" value="0x4000000" />
+    <entry name="BBM" value="0x8000000" />
+    <entry name="NVM_CACHE" value="0x10000000" />
+    <entry name="2TB_VOL" value="0x20000000" />
+    <entry name="NEVER_USE" value="0x40000000" />
+    <entry name="CHECKSUM_VERIFY" value="0x80000000" />
+  </enumDef>
+  <enumDef name="disk_status" type="UInt32">
+    <entry name="SPARE_DISK" value="0x01" />
+    <entry name="CONFIGURED_DISK" value="0x02" />
+    <entry name="FAILED_DISK" value="0x04" />
+    <entry name="USABLE_DISK" value="0x08" />
+    <entry name="DETECTED_DISK" value="0x10" />
+    <entry name="CLAIMED_DISK" value="0x20" />
+    <entry name="PASSTHRU_DISK" value="0x40" />
+    <entry name="OFFLINE_DISK" value="0x80" />
+    <entry name="CONFIG_ON_DISK" value="0x100" />
+    <entry name="DISK_SMART_EVENT_TRIGGERED" value="0x200" />
+    <entry name="DISK_SMART_EVENT_SUPPORTED" value="0x400" />
+    <entry name="FORMATTING_DISK" value="0x800" />
+    <entry name="FORMAT_SUCCEEDED" value="0x1000" />
+    <entry name="FORMAT_FAILED" value="0x2000" />
+    <entry name="ELIGIBLE_FOR_SPARE" value="0x4000" />
+    <entry name="READ_CONFIG_NEEDED" value="0x8000" />
+    <entry name="CONFIG_IS_UPREV" value="0x10000" />
+    <entry name="UNKNOW_DISK_FAILURE" value="0x40000" />
+    <entry name="DO_READ_CONFIG" value="0x80000" />
+    <entry name="POWERED_OFF_DISK" value="0x100000" />
+    <entry name="PASSTHRU_CLAIMABLE" value="0x200000" />
+    <entry name="CLONE_DISK_MODIFIED" value="0x400000" />
+    <entry name="PASSTHRU_DISK_WMPB" value="0x800000" />
+  </enumDef>
+  <enumDef name="map_state" type="UInt8">
+    <entry name="NORMAL" value="0x00" />
+    <entry name="UNINITIALIZED" value="0x01" />
+    <entry name="DEGRADED" value="0x02" />
+    <entry name="FAILED" value="0x03" />
+  </enumDef>
+  <enumDef name="map_raid_level" type="UInt8">
+    <entry name="RAID0" value="0" />
+    <entry name="RAID1" value="1" />
+    <entry name="RAID10" value="2" />
+    <entry name="RAID5" value="5" />
+    <entry name="SPARE" value="8" />
+    <entry name="UNDEF" value="0xff" />
+  </enumDef>
+  <enumDef name="map_none_failed" type="UInt8">
+    <entry name="NONE" value="255" />
+  </enumDef>
+  <enumDef name="vol_migr_state" type="UInt8">
+    <entry name="NORMAL" value="0" />
+    <entry name="MIGRATING" value="1" />
+  </enumDef>
+  <enumDef name="vol_migr_type" type="UInt8">
+    <entry name="INITIALIZING" value="0" />
+    <entry name="REBUILDING" value="1" />
+    <entry name="VERIFYING" value="2" />
+    <entry name="GENERAL_MIGRATION" value="3" />
+    <entry name="STATE_CHANGE" value="4" />
+  </enumDef>
+  <enumDef name="dev_status" type="UInt32">
+    <entry name="BOOTABLE" value="0x01" />
+    <entry name="BOOT_DEVICE" value="0x02" />
+    <entry name="READ_COALESCING" value="0x04" />
+    <entry name="WRITE_COALESCING" value="0x08" />
+    <entry name="LAST_SHUTDOWN_DIRTY" value="0x10" />
+    <entry name="HIDDEN_AT_BOOT" value="0x20" />
+    <entry name="CURRENTLY_HIDDEN" value="0x40" />
+    <entry name="VERIFY_AND_FIX" value="0x80" />
+    <entry name="MAP_STATE_UNINIT" value="0x100" />
+    <entry name="NO_AUTO_RECOVERY" value="0x200" />
+    <entry name="CLONE_N_GO" value="0x400" />
+    <entry name="CLONE_MAN_SYNC" value="0x800" />
+    <entry name="CNG_MASTER_DISK_NUM" value="0x1000" />
+  </enumDef>
+<struct name="imsm">
+    <string name="signature" maxByteCount="32" encoding="ascii"/>
+    <primitive name="meta_checksum" type="UInt32"/>
+    <primitive name="meta_size" type="UInt32"/>
+    <primitive name="family_num" type="UInt32"/>
+    <primitive name="gen_num" type="UInt32"/>
+    <primitive name="errlog_size" type="UInt32"/>
+    <flags name="attributes" enum="meta_attribs" type="UInt32" byteOrder="little-endian" />
+    <primitive name="num_disks" type="UInt8"/>
+    <primitive name="num_raid_devs" type="UInt8"/>
+    <primitive name="errlog_pos" type="UInt8"/>
+    <primitive name="fill" type="UInt8"/>
+    <primitive name="cache_size" type="UInt32"/>
+    <primitive name="orig_family_num" type="UInt32"/>
+    <primitive name="pwr_cycle_count" type="UInt32"/>
+    <primitive name="bbm_log_size" type="UInt32"/>
+    <array name="filler" length="35">
+      <primitive type="UInt32" />
+    </array>
+    <array name="disks" length="num_disks">
+      <struct name="disk">
+        <string name="serial" maxByteCount="16" encoding="ascii"/>
+        <primitive name="total_blocks_lo" type="UInt32"/>
+        <primitive name="scsi_id" type="UInt32"/>
+        <flags name="status" enum="disk_status" type="UInt32" byteOrder="little-endian" />
+        <primitive name="owner_cfg_num" type="UInt32"/>
+        <primitive name="total_blocks_hi" type="UInt32"/>
+        <array name="filler" length="3">
+          <primitive type="UInt32" />
+        </array>
+      </struct>
+    </array>
+    <array name="raid_devs" length="num_raid_devs">
+      <struct name="raid_dev">
+        <string name="serial" maxByteCount="16" encoding="ascii"/>
+        <primitive name="size_low" type="UInt32"/>
+        <primitive name="size_high" type="UInt32"/>
+        <flags name="status" enum="dev_status" type="UInt32" byteOrder="little-endian" />
+        <primitive name="reserved_blocks" type="UInt32"/>
+        <primitive name="migr_priority" type="UInt8"/>
+        <primitive name="num_sub_vols" type="UInt8"/>
+        <primitive name="tid" type="UInt8"/>
+        <primitive name="cng_master_disk" type="UInt8"/>
+        <primitive name="cache_policy" type="UInt16"/>
+        <primitive name="cng_state" type="UInt8"/>
+        <primitive name="cng_sub_state" type="UInt8"/>
+        <array name="filler" length="10">
+          <primitive type="UInt32" />
+        </array>
+        <struct name="vol">
+          <primitive name="curr_migr_unit" type="UInt32"/>
+          <primitive name="checkpoint_id" type="UInt32"/>
+          <enum name="migr_state" enum="vol_migr_state" type="UInt8" />
+          <enum name="migr_type" enum="vol_migr_type" type="UInt8" />
+          <primitive name="dirty" type="UInt8"/>
+          <primitive name="fs_state" type="UInt8"/>
+          <primitive name="verify_errors" type="UInt16"/>
+          <primitive name="bad_blocks" type="UInt16"/>
+          <array name="filler" length="4">
+            <primitive type="UInt32" />
+          </array>
+          <array name="maps" length="2">
+            <struct name="map">
+              <primitive name="pba_of_lba0_lo" type="UInt32"/>
+              <primitive name="blocks_per_member_lo" type="UInt32"/>
+              <primitive name="num_data_stripes_lo" type="UInt32"/>
+              <primitive name="blocks_per_strip" type="UInt16"/>
+              <enum name="state" enum="map_state" type="UInt8" />
+              <enum name="raid_level" enum="map_raid_level" type="UInt8" />
+              <primitive name="num_members" type="UInt8"/>
+              <primitive name="num_domains" type="UInt8"/>
+              <primitive name="failed_disk_num" type="UInt8"/>
+              <primitive name="ddf" type="UInt8"/>
+              <primitive name="pba_of_lba0_hi" type="UInt32"/>
+              <primitive name="blocks_per_member_hi" type="UInt32"/>
+              <primitive name="num_data_stripes_hi" type="UInt32"/>
+              <array name="filler" length="4">
+                <primitive type="UInt32" />
+              </array>
+              <array name="disks" length="num_members">
+                <struct name="map_disk" byteOrder="big-endian">
+                  <bitfield name="disk_rebuild" type="bool" width="8"/>
+                  <bitfield name="disk_num" type="unsigned" width="24"/>
+                </struct>
+              </array>
+            </struct>
+          </array>
+        </struct>
+      </struct>
+    </array>
+</struct>
+</data>
